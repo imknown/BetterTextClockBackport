@@ -1,129 +1,151 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:forceUse="formatAuto"
-            app:format12Hour="yyyy年M月d日 E a好"
-            app:format24Hour="yyyy年M月d日 E a好" />
+            app:format12Hour="yyyy/MM/dd EEEE"
+            app:format24Hour="yyyy/MM/dd EEEE"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:format12Hour="yyyy年MM月dd日 EEEE aa好\n"
-            app:format24Hour="yyyy年MM月dd日 EEEE aa好\n" />
+            app:format12Hour="y/M/d E"
+            app:format24Hour="y/M/d E"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\nNormal"/>
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <!-- ===================================================== -->
 
-        <net.imknown.bettertextclockbackportlibrary.TextClock
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:forceUse="format12"
-            app:format12Hour="美国时间  GMT-6 强制ｈ12小时 现在是 a h:m:s"
-            app:timeZone="GMT-6" />
+            android:text="\nI changed k instead of h/H as default"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format12"
-            app:format12Hour="日本时间  GMT+9 强制ｈ12小时 现在是 a h:m:s\n"
-            app:timeZone="GMT+9" />
-
-        <!-- ===================================================== -->
+            app:format12Hour="a k:m:s"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format12"
-            app:format12Hour="强制ｈ12小时 现在是 a h:m:s" />
-
-        <net.imknown.bettertextclockbackportlibrary.TextClock
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:forceUse="format12"
-            app:format12Hour="强制ｈｈ12小时 现在是 a hh:m:s\n" />
-        <!-- ===================================================== -->
-
-        <net.imknown.bettertextclockbackportlibrary.TextClock
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:forceUse="format12"
-            app:format12Hour="强制ｋ12小时 现在是 a k:m:s" />
-
-        <net.imknown.bettertextclockbackportlibrary.TextClock
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:forceUse="format12"
-            app:format12Hour="强制ｋｋ12小时 现在是 a kk:m:s\n" />
-        <!-- ===================================================== -->
+            app:format12Hour="a k:mm:ss"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="强制Ｈ24小时 现在是 H:mm:ss" />
+            app:format24Hour="kk:m:s"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="强制ＨＨ24小时 现在是 HH:mm:ss\n" />
+            app:format24Hour="kk:mm:ss"/>
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:forceUse="formatAuto"
+            app:format12Hour="a k:m:s"
+            app:format24Hour="a kk:m:s"/>
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:forceUse="formatAuto"
+            app:format12Hour="a k:mm:ss"
+            app:format24Hour="a kk:mm:ss"/>
 
         <!-- ===================================================== -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\nH, HH, h and hh can be use above API 17 only"/>
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:forceUse="format12"
+            app:format12Hour="a h:m:s"/>
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:forceUse="format12"
+            app:format12Hour="a hh:mm:ss"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="强制ｋ24小时 现在是 k:mm:ss" />
+            app:format24Hour="H:m:s"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="强制ｋｋ24小时 现在是 kk:mm:ss\n" />
+            app:format24Hour="HH:mm:ss"/>
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:forceUse="formatAuto"
+            app:format12Hour="a h:m:s"
+            app:format24Hour="a H:m:s"/>
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:forceUse="formatAuto"
+            app:format12Hour="a hh:mm:ss"
+            app:format24Hour="a HH:mm:ss"/>
 
         <!-- ===================================================== -->
 
-        <net.imknown.bettertextclockbackportlibrary.TextClock
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:forceUse="formatAuto"
-            app:format12Hour="系统ｈ规格 现在是 a h:m:s"
-            app:format24Hour="系统Ｈ规格 现在是 H:mm:ss" />
+            android:text="\nGMT, Washington D.C. and Tokyo"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:forceUse="formatAuto"
-            app:format12Hour="系统ｈｈ规格 现在是 a hh:m:s\n"
-            app:format24Hour="系统ＨＨ规格 现在是 HH:mm:ss\n" />
-
-        <!-- ===================================================== -->
+            app:forceUse="format12"
+            app:format12Hour="y/M/d E a k:m:s"
+            app:timeZone="GMT-6"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:forceUse="formatAuto"
-            app:format12Hour="系统ｋ规格 现在是 a k:m:s"
-            app:format24Hour="系统ｋ规格 现在是 k:mm:ss" />
-
-        <net.imknown.bettertextclockbackportlibrary.TextClock
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:forceUse="formatAuto"
-            app:format12Hour="系统ｋｋ规格 现在是 a kk:m:s\n"
-            app:format24Hour="系统ｋｋ规格 现在是 kk:mm:ss\n" />
+            app:forceUse="format12"
+            app:format12Hour="y/M/d E a h:m:s"
+            app:timeZone="GMT+9"/>
     </LinearLayout>
 
 </ScrollView>

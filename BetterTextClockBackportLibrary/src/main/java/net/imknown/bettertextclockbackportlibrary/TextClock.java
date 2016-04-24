@@ -57,14 +57,14 @@ import android.widget.TextView;
  * <ul>
  * <li>Use the value returned by {@link #getFormat24Hour()} when non-null</li>
  * <li>Otherwise, use the value returned by {@link #getFormat12Hour()} when non-null</li>
- * <li>Otherwise, use a default value appropriate for the user's locale, such as {@code h:mm a}</li>
+ * <li>Otherwise, use a default value appropriate for the user's locale, such as {@code k:mm a}</li>
  * </ul>
  * </li>
  * <li>In 12-hour mode:
  * <ul>
  * <li>Use the value returned by {@link #getFormat12Hour()} when non-null</li>
  * <li>Otherwise, use the value returned by {@link #getFormat24Hour()} when non-null</li>
- * <li>Otherwise, use a default value appropriate for the user's locale, such as {@code HH:mm}</li>
+ * <li>Otherwise, use a default value appropriate for the user's locale, such as {@code kk:mm}</li>
  * </ul>
  * </li>
  * </ul>
@@ -88,7 +88,7 @@ public class TextClock extends TextView {
 	 * @see #getFormat12Hour()
 	 * @deprecated Let the system use locale-appropriate defaults instead.
 	 */
-	public static final CharSequence DEFAULT_FORMAT_12_HOUR = "h:mm a";
+	public static final CharSequence DEFAULT_FORMAT_12_HOUR = "k:mm a";
 
 	/**
 	 * The default formatting pattern in 24-hour mode. This pattern is used if {@link #setFormat24Hour(CharSequence)} is called with a null pattern or if no pattern was specified when creating an instance of this class.
@@ -99,7 +99,7 @@ public class TextClock extends TextView {
 	 * @see #getFormat24Hour()
 	 * @deprecated Let the system use locale-appropriate defaults instead.
 	 */
-	public static final CharSequence DEFAULT_FORMAT_24_HOUR = "H:mm";
+	public static final CharSequence DEFAULT_FORMAT_24_HOUR = "k:mm";
 
 	private CharSequence mFormat12;
 	private CharSequence mFormat24;
@@ -114,10 +114,12 @@ public class TextClock extends TextView {
 	private Calendar mTime;
 	private String mTimeZone;
 
-	private final int FORMAT_12 = 0;
-	private final int FORMAT_24 = 1;
-	private final int FORMAT_AUTO = 2;
+    // region [add by imknown]
+	private static final int FORMAT_12 = 0;
+	private static final int FORMAT_24 = 1;
+	private static final int FORMAT_AUTO = 2;
 	private int forceUse = FORMAT_AUTO;
+    // endregion
 
 	private final ContentObserver mFormatChangeObserver = new ContentObserver(new Handler()) {
 		@Override
@@ -210,13 +212,12 @@ public class TextClock extends TextView {
 
 	private void init() {
 		if (mFormat12 == null || mFormat24 == null) {
-			// TODO add bestDateFormat
 			// LocaleData ld = LocaleData.get(getContext().getResources().getConfiguration().locale);
 			if (mFormat12 == null) {
-				mFormat12 = "h:mm";
+				mFormat12 = LocaleData_timeFormat_km;
 			}
 			if (mFormat24 == null) {
-				mFormat24 = "HH:mm";
+				mFormat24 = LocaleData_timeFormat_kkm;
 			}
 		}
 
@@ -380,6 +381,9 @@ public class TextClock extends TextView {
 		return mFormat;
 	}
 
+	private CharSequence LocaleData_timeFormat_kkm = "kk:mm";
+	private CharSequence LocaleData_timeFormat_km = "k:mm";
+
 	/**
 	 * Selects either one of {@link #getFormat12Hour()} or {@link #getFormat24Hour()} depending on whether the user has selected 24-hour format.
 	 *
@@ -389,17 +393,15 @@ public class TextClock extends TextView {
 	private void chooseFormat(boolean handleTicker) {
 		final boolean format24Requested = is24HourModeEnabled();
 
-		// TODO add bestDateFormat
 		// LocaleData ld = LocaleData.get(getContext().getResources().getConfiguration().locale);
 
 		if (format24Requested) {
-			mFormat = abc(mFormat24, mFormat12, "HH:mm");
+			mFormat = abc(mFormat24, mFormat12, LocaleData_timeFormat_kkm);
 		} else {
-			mFormat = abc(mFormat12, mFormat24, "h:mm");
+			mFormat = abc(mFormat12, mFormat24, LocaleData_timeFormat_km);
 		}
 
 		boolean hadSeconds = mHasSeconds;
-		// TODO update seconds
 		mHasSeconds = DateFormatCompat.hasSeconds(mFormat);
 
 		if (handleTicker && mAttached && hadSeconds != mHasSeconds) {
