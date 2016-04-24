@@ -1,0 +1,11 @@
+# Gradle files
+/build
+
+# Log Files
+*.log
+
+# Mac os
+.DS_Store
+
+# IntelliJ Idea project files
+*.iml
