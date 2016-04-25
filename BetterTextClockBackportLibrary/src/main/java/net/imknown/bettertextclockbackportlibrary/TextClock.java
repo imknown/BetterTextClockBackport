@@ -16,9 +16,6 @@
 
 package net.imknown.bettertextclockbackportlibrary;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -36,19 +33,22 @@ import android.view.ViewDebug.ExportedProperty;
 import android.widget.RemoteViews.RemoteView;
 import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 /**
  * <p>
  * <code>TextClock</code> can display the current date and/or time as a formatted string.
  * </p>
- *
+ * <p/>
  * <p>
  * This view honors the 24-hour format system setting. As such, it is possible and recommended to provide two different formatting patterns: one to display the date/time in 24-hour mode and one to display the date/time in 12-hour mode. Most callers will want to use the defaults, though, which will be appropriate for the user's locale.
  * </p>
- *
+ * <p/>
  * <p>
  * It is possible to determine whether the system is currently in 24-hour mode by calling {@link #is24HourModeEnabled()}.
  * </p>
- *
+ * <p/>
  * <p>
  * The rules used by this widget to decide how to format the date and time are the following:
  * </p>
@@ -68,7 +68,7 @@ import android.widget.TextView;
  * </ul>
  * </li>
  * </ul>
- *
+ * <p/>
  * <p>
  * The {@link CharSequence} instances used as formatting patterns when calling either {@link #setFormat24Hour(CharSequence)} or {@link #setFormat12Hour(CharSequence)} can contain styling information. To do so, use a {@link android.text.Spanned} object. Note that if you customize these strings, it is your responsibility to supply strings appropriate for formatting dates and/or times in the user's locale.
  * </p>
@@ -79,406 +79,386 @@ import android.widget.TextView;
  */
 @RemoteView
 public class TextClock extends TextView {
-	/**
-	 * The default formatting pattern in 12-hour mode. This pattern is used if {@link #setFormat12Hour(CharSequence)} is called with a null pattern or if no pattern was specified when creating an instance of this class.
-	 *
-	 * This default pattern shows only the time, hours and minutes, and an am/pm indicator.
-	 *
-	 * @see #setFormat12Hour(CharSequence)
-	 * @see #getFormat12Hour()
-	 * @deprecated Let the system use locale-appropriate defaults instead.
-	 */
-	public static final CharSequence DEFAULT_FORMAT_12_HOUR = "k:mm a";
+    /**
+     * The default formatting pattern in 12-hour mode. This pattern is used if {@link #setFormat12Hour(CharSequence)} is called with a null pattern or if no pattern was specified when creating an instance of this class.
+     * <p/>
+     * This default pattern shows only the time, hours and minutes, and an am/pm indicator.
+     *
+     * @see #setFormat12Hour(CharSequence)
+     * @see #getFormat12Hour()
+     * @deprecated Let the system use locale-appropriate defaults instead.
+     */
+    public static final CharSequence DEFAULT_FORMAT_12_HOUR = "h:mm a";
 
-	/**
-	 * The default formatting pattern in 24-hour mode. This pattern is used if {@link #setFormat24Hour(CharSequence)} is called with a null pattern or if no pattern was specified when creating an instance of this class.
-	 *
-	 * This default pattern shows only the time, hours and minutes.
-	 *
-	 * @see #setFormat24Hour(CharSequence)
-	 * @see #getFormat24Hour()
-	 * @deprecated Let the system use locale-appropriate defaults instead.
-	 */
-	public static final CharSequence DEFAULT_FORMAT_24_HOUR = "k:mm";
+    /**
+     * The default formatting pattern in 24-hour mode. This pattern is used if {@link #setFormat24Hour(CharSequence)} is called with a null pattern or if no pattern was specified when creating an instance of this class.
+     * <p/>
+     * This default pattern shows only the time, hours and minutes.
+     *
+     * @see #setFormat24Hour(CharSequence)
+     * @see #getFormat24Hour()
+     * @deprecated Let the system use locale-appropriate defaults instead.
+     */
+    public static final CharSequence DEFAULT_FORMAT_24_HOUR = "k:mm";
 
-	private CharSequence mFormat12;
-	private CharSequence mFormat24;
+    private CharSequence mFormat12;
+    private CharSequence mFormat24;
 
-	@ExportedProperty
-	private CharSequence mFormat;
-	@ExportedProperty
-	private boolean mHasSeconds;
+    @ExportedProperty
+    private CharSequence mFormat;
+    @ExportedProperty
+    private boolean mHasSeconds;
 
-	private boolean mAttached;
+    private boolean mAttached;
 
-	private Calendar mTime;
-	private String mTimeZone;
+    private Calendar mTime;
+    private String mTimeZone;
 
     // region [add by imknown]
-	private static final int FORMAT_12 = 0;
-	private static final int FORMAT_24 = 1;
-	private static final int FORMAT_AUTO = 2;
-	private int forceUse = FORMAT_AUTO;
+    private static final int FORMAT_12 = 0;
+    private static final int FORMAT_24 = 1;
+    private static final int FORMAT_AUTO = 2;
+    private int forceUse = FORMAT_AUTO;
+
+    private CharSequence LocaleData_timeFormat_hm = "h:mm";
+    private CharSequence LocaleData_timeFormat_kkm = "kk:mm";
     // endregion
 
-	private final ContentObserver mFormatChangeObserver = new ContentObserver(new Handler()) {
-		@Override
-		public void onChange(boolean selfChange) {
-			chooseFormat();
-			onTimeChanged();
-		}
+    private final ContentObserver mFormatChangeObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            chooseFormat();
+            onTimeChanged();
+        }
 
-		@Override
-		public void onChange(boolean selfChange, Uri uri) {
-			chooseFormat();
-			onTimeChanged();
-		}
-	};
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            chooseFormat();
+            onTimeChanged();
+        }
+    };
 
-	private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (mTimeZone == null && Intent.ACTION_TIMEZONE_CHANGED.equals(intent.getAction())) {
-				final String timeZone = intent.getStringExtra("time-zone");
-				createTime(timeZone);
-			}
-			onTimeChanged();
-		}
-	};
+    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mTimeZone == null && Intent.ACTION_TIMEZONE_CHANGED.equals(intent.getAction())) {
+                final String timeZone = intent.getStringExtra("time-zone");
+                createTime(timeZone);
+            }
+            onTimeChanged();
+        }
+    };
 
-	private final Runnable mTicker = new Runnable() {
-		public void run() {
-			onTimeChanged();
+    private final Runnable mTicker = new Runnable() {
+        public void run() {
+            onTimeChanged();
 
-			long now = SystemClock.uptimeMillis();
-			long next = now + (1000 - now % 1000);
+            long now = SystemClock.uptimeMillis();
+            long next = now + (1000 - now % 1000);
 
-			getHandler().postAtTime(mTicker, next);
-		}
-	};
+            getHandler().postAtTime(mTicker, next);
+        }
+    };
 
-	/**
-	 * Creates a new clock using the default patterns {@link #DEFAULT_FORMAT_24_HOUR} and {@link #DEFAULT_FORMAT_12_HOUR} respectively for the 24-hour and 12-hour modes.
-	 *
-	 * @param context
-	 *            The Context the view is running in, through which it can access the current theme, resources, etc.
-	 */
-	// @SuppressWarnings("UnusedDeclaration")
-	public TextClock(Context context) {
-		super(context);
-		init();
-	}
+    /**
+     * Creates a new clock using the default patterns {@link #DEFAULT_FORMAT_24_HOUR} and {@link #DEFAULT_FORMAT_12_HOUR} respectively for the 24-hour and 12-hour modes.
+     *
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     */
+    // @SuppressWarnings("UnusedDeclaration")
+    public TextClock(Context context) {
+        super(context);
+        init();
+    }
 
-	/**
-	 * Creates a new clock inflated from XML. This object's properties are intialized from the attributes specified in XML.
-	 *
-	 * This constructor uses a default style of 0, so the only attribute values applied are those in the Context's Theme and the given AttributeSet.
-	 *
-	 * @param context
-	 *            The Context the view is running in, through which it can access the current theme, resources, etc.
-	 * @param attrs
-	 *            The attributes of the XML tag that is inflating the view
-	 */
-	// @SuppressWarnings("UnusedDeclaration")
-	public TextClock(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    /**
+     * Creates a new clock inflated from XML. This object's properties are intialized from the attributes specified in XML.
+     * <p/>
+     * This constructor uses a default style of 0, so the only attribute values applied are those in the Context's Theme and the given AttributeSet.
+     *
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs   The attributes of the XML tag that is inflating the view
+     */
+    // @SuppressWarnings("UnusedDeclaration")
+    public TextClock(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	/**
-	 * Creates a new clock inflated from XML. This object's properties are intialized from the attributes specified in XML.
-	 *
-	 * @param context
-	 *            The Context the view is running in, through which it can access the current theme, resources, etc.
-	 * @param attrs
-	 *            The attributes of the XML tag that is inflating the view
-	 * @param defStyle
-	 *            The default style to apply to this view. If 0, no style will be applied (beyond what is included in the theme). This may either be an attribute resource, whose value will be retrieved from the current theme, or an explicit style resource
-	 */
-	public TextClock(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+    /**
+     * Creates a new clock inflated from XML. This object's properties are intialized from the attributes specified in XML.
+     *
+     * @param context  The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs    The attributes of the XML tag that is inflating the view
+     * @param defStyle The default style to apply to this view. If 0, no style will be applied (beyond what is included in the theme). This may either be an attribute resource, whose value will be retrieved from the current theme, or an explicit style resource
+     */
+    public TextClock(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
 
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextClock, defStyle, 0);
-		try {
-			mFormat12 = a.getText(R.styleable.TextClock_format12Hour);
-			mFormat24 = a.getText(R.styleable.TextClock_format24Hour);
-			mTimeZone = a.getString(R.styleable.TextClock_timeZone);
-			forceUse = a.getInt(R.styleable.TextClock_forceUse, FORMAT_AUTO);
-		} finally {
-			a.recycle();
-		}
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TextClock, defStyle, 0);
+        try {
+            mFormat12 = a.getText(R.styleable.TextClock_format12Hour);
+            mFormat24 = a.getText(R.styleable.TextClock_format24Hour);
+            mTimeZone = a.getString(R.styleable.TextClock_timeZone);
+            forceUse = a.getInt(R.styleable.TextClock_forceUse, FORMAT_AUTO);
+        } finally {
+            a.recycle();
+        }
 
-		init();
-	}
+        init();
+    }
 
-	private void init() {
-		if (mFormat12 == null || mFormat24 == null) {
-			// LocaleData ld = LocaleData.get(getContext().getResources().getConfiguration().locale);
-			if (mFormat12 == null) {
-				mFormat12 = LocaleData_timeFormat_km;
-			}
-			if (mFormat24 == null) {
-				mFormat24 = LocaleData_timeFormat_kkm;
-			}
-		}
+    private void init() {
+        if (mFormat12 == null || mFormat24 == null) {
+            // LocaleData ld = LocaleData.get(getContext().getResources().getConfiguration().locale);
+            if (mFormat12 == null) {
+                mFormat12 = LocaleData_timeFormat_hm;
+            }
+            if (mFormat24 == null) {
+                mFormat24 = LocaleData_timeFormat_kkm;
+            }
+        }
 
-		createTime(mTimeZone);
-		// Wait until onAttachedToWindow() to handle the ticker
-		chooseFormat(false);
-	}
+        createTime(mTimeZone);
+        // Wait until onAttachedToWindow() to handle the ticker
+        chooseFormat(false);
+    }
 
-	private void createTime(String timeZone) {
-		if (timeZone != null) {
-			mTime = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
-		} else {
-			mTime = Calendar.getInstance();
-		}
-	}
+    private void createTime(String timeZone) {
+        if (timeZone != null) {
+            mTime = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        } else {
+            mTime = Calendar.getInstance();
+        }
+    }
 
-	/**
-	 * Returns the formatting pattern used to display the date and/or time in 12-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
-	 *
-	 * @return A {@link CharSequence} or null.
-	 *
-	 * @see #setFormat12Hour(CharSequence)
-	 * @see #is24HourModeEnabled()
-	 */
-	@ExportedProperty
-	public CharSequence getFormat12Hour() {
-		return mFormat12;
-	}
+    /**
+     * Returns the formatting pattern used to display the date and/or time in 12-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
+     *
+     * @return A {@link CharSequence} or null.
+     * @see #setFormat12Hour(CharSequence)
+     * @see #is24HourModeEnabled()
+     */
+    @ExportedProperty
+    public CharSequence getFormat12Hour() {
+        return mFormat12;
+    }
 
-	/**
-	 * Specifies the formatting pattern used to display the date and/or time in 12-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
-	 *
-	 * If this pattern is set to null, {@link #getFormat24Hour()} will be used even in 12-hour mode. If both 24-hour and 12-hour formatting patterns are set to null, {@link #DEFAULT_FORMAT_24_HOUR} and {@link #DEFAULT_FORMAT_12_HOUR} will be used instead.
-	 *
-	 * @param format
-	 *            A date/time formatting pattern as described in {@link DateFormat}
-	 *
-	 * @see #getFormat12Hour()
-	 * @see #is24HourModeEnabled()
-	 * @see #DEFAULT_FORMAT_12_HOUR
-	 * @see DateFormat
-	 *
-	 * @attr ref android.R.styleable#TextClock_format12Hour
-	 */
-	@RemotableViewMethod
-	public void setFormat12Hour(CharSequence format) {
-		mFormat12 = format;
+    /**
+     * Specifies the formatting pattern used to display the date and/or time in 12-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
+     * <p/>
+     * If this pattern is set to null, {@link #getFormat24Hour()} will be used even in 12-hour mode. If both 24-hour and 12-hour formatting patterns are set to null, {@link #DEFAULT_FORMAT_24_HOUR} and {@link #DEFAULT_FORMAT_12_HOUR} will be used instead.
+     *
+     * @param format A date/time formatting pattern as described in {@link DateFormat}
+     * @attr ref android.R.styleable#TextClock_format12Hour
+     * @see #getFormat12Hour()
+     * @see #is24HourModeEnabled()
+     * @see #DEFAULT_FORMAT_12_HOUR
+     * @see DateFormat
+     */
+    @RemotableViewMethod
+    public void setFormat12Hour(CharSequence format) {
+        mFormat12 = format;
 
-		chooseFormat();
-		onTimeChanged();
-	}
+        chooseFormat();
+        onTimeChanged();
+    }
 
-	/**
-	 * Returns the formatting pattern used to display the date and/or time in 24-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
-	 *
-	 * @return A {@link CharSequence} or null.
-	 *
-	 * @see #setFormat24Hour(CharSequence)
-	 * @see #is24HourModeEnabled()
-	 */
-	@ExportedProperty
-	public CharSequence getFormat24Hour() {
-		return mFormat24;
-	}
+    /**
+     * Returns the formatting pattern used to display the date and/or time in 24-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
+     *
+     * @return A {@link CharSequence} or null.
+     * @see #setFormat24Hour(CharSequence)
+     * @see #is24HourModeEnabled()
+     */
+    @ExportedProperty
+    public CharSequence getFormat24Hour() {
+        return mFormat24;
+    }
 
-	/**
-	 * Specifies the formatting pattern used to display the date and/or time in 24-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
-	 *
-	 * If this pattern is set to null, {@link #getFormat12Hour()} will be used even in 24-hour mode. If both 24-hour and 12-hour formatting patterns are set to null, {@link #DEFAULT_FORMAT_24_HOUR} and {@link #DEFAULT_FORMAT_12_HOUR} will be used instead.
-	 *
-	 * @param format
-	 *            A date/time formatting pattern as described in {@link DateFormat}
-	 *
-	 * @see #getFormat24Hour()
-	 * @see #is24HourModeEnabled()
-	 * @see #DEFAULT_FORMAT_24_HOUR
-	 * @see DateFormat
-	 *
-	 * @attr ref android.R.styleable#TextClock_format24Hour
-	 */
-	@RemotableViewMethod
-	public void setFormat24Hour(CharSequence format) {
-		mFormat24 = format;
+    /**
+     * Specifies the formatting pattern used to display the date and/or time in 24-hour mode. The formatting pattern syntax is described in {@link DateFormat}.
+     * <p/>
+     * If this pattern is set to null, {@link #getFormat12Hour()} will be used even in 24-hour mode. If both 24-hour and 12-hour formatting patterns are set to null, {@link #DEFAULT_FORMAT_24_HOUR} and {@link #DEFAULT_FORMAT_12_HOUR} will be used instead.
+     *
+     * @param format A date/time formatting pattern as described in {@link DateFormat}
+     * @attr ref android.R.styleable#TextClock_format24Hour
+     * @see #getFormat24Hour()
+     * @see #is24HourModeEnabled()
+     * @see #DEFAULT_FORMAT_24_HOUR
+     * @see DateFormat
+     */
+    @RemotableViewMethod
+    public void setFormat24Hour(CharSequence format) {
+        mFormat24 = format;
 
-		chooseFormat();
-		onTimeChanged();
-	}
+        chooseFormat();
+        onTimeChanged();
+    }
 
-	/**
-	 * Indicates whether the system is currently using the 24-hour mode.
-	 *
-	 * When the system is in 24-hour mode, this view will use the pattern returned by {@link #getFormat24Hour()}. In 12-hour mode, the pattern returned by {@link #getFormat12Hour()} is used instead.
-	 *
-	 * If either one of the formats is null, the other format is used. If both formats are null, the default values {@link #DEFAULT_FORMAT_12_HOUR} and {@link #DEFAULT_FORMAT_24_HOUR} are used instead.
-	 *
-	 * @return true if time should be displayed in 24-hour format, false if it should be displayed in 12-hour format.
-	 *
-	 * @see #setFormat12Hour(CharSequence)
-	 * @see #getFormat12Hour()
-	 * @see #setFormat24Hour(CharSequence)
-	 * @see #getFormat24Hour()
-	 */
-	public boolean is24HourModeEnabled() {
-		if (forceUse == FORMAT_12) {
-			return false;
-		} else if (forceUse == FORMAT_24) {
-			return true;
-		}
+    /**
+     * Indicates whether the system is currently using the 24-hour mode.
+     * <p/>
+     * When the system is in 24-hour mode, this view will use the pattern returned by {@link #getFormat24Hour()}. In 12-hour mode, the pattern returned by {@link #getFormat12Hour()} is used instead.
+     * <p/>
+     * If either one of the formats is null, the other format is used. If both formats are null, the default values {@link #DEFAULT_FORMAT_12_HOUR} and {@link #DEFAULT_FORMAT_24_HOUR} are used instead.
+     *
+     * @return true if time should be displayed in 24-hour format, false if it should be displayed in 12-hour format.
+     * @see #setFormat12Hour(CharSequence)
+     * @see #getFormat12Hour()
+     * @see #setFormat24Hour(CharSequence)
+     * @see #getFormat24Hour()
+     */
+    public boolean is24HourModeEnabled() {
+        if (forceUse == FORMAT_12) {
+            return false;
+        } else if (forceUse == FORMAT_24) {
+            return true;
+        }
 
-		return DateFormat.is24HourFormat(getContext());
-	}
+        return DateFormat.is24HourFormat(getContext());
+    }
 
-	/**
-	 * Indicates which time zone is currently used by this view.
-	 *
-	 * @return The ID of the current time zone or null if the default time zone, as set by the user, must be used
-	 *
-	 * @see TimeZone
-	 * @see TimeZone#getAvailableIDs()
-	 * @see #setTimeZone(String)
-	 */
-	public String getTimeZone() {
-		return mTimeZone;
-	}
+    /**
+     * Indicates which time zone is currently used by this view.
+     *
+     * @return The ID of the current time zone or null if the default time zone, as set by the user, must be used
+     * @see TimeZone
+     * @see TimeZone#getAvailableIDs()
+     * @see #setTimeZone(String)
+     */
+    public String getTimeZone() {
+        return mTimeZone;
+    }
 
-	/**
-	 * Sets the specified time zone to use in this clock. When the time zone is set through this method, system time zone changes (when the user sets the time zone in settings for instance) will be ignored.
-	 *
-	 * @param timeZone
-	 *            The desired time zone's ID as specified in {@link TimeZone} or null to user the time zone specified by the user (system time zone)
-	 *
-	 * @see #getTimeZone()
-	 * @see TimeZone#getAvailableIDs()
-	 * @see TimeZone#getTimeZone(String)
-	 *
-	 * @attr ref android.R.styleable#TextClock_timeZone
-	 */
-	@RemotableViewMethod
-	public void setTimeZone(String timeZone) {
-		mTimeZone = timeZone;
+    /**
+     * Sets the specified time zone to use in this clock. When the time zone is set through this method, system time zone changes (when the user sets the time zone in settings for instance) will be ignored.
+     *
+     * @param timeZone The desired time zone's ID as specified in {@link TimeZone} or null to user the time zone specified by the user (system time zone)
+     * @attr ref android.R.styleable#TextClock_timeZone
+     * @see #getTimeZone()
+     * @see TimeZone#getAvailableIDs()
+     * @see TimeZone#getTimeZone(String)
+     */
+    @RemotableViewMethod
+    public void setTimeZone(String timeZone) {
+        mTimeZone = timeZone;
 
-		createTime(timeZone);
-		onTimeChanged();
-	}
+        createTime(timeZone);
+        onTimeChanged();
+    }
 
-	/**
-	 * Selects either one of {@link #getFormat12Hour()} or {@link #getFormat24Hour()} depending on whether the user has selected 24-hour format.
-	 *
-	 * Calling this method does not schedule or unschedule the time ticker.
-	 */
-	private void chooseFormat() {
-		chooseFormat(true);
-	}
+    /**
+     * Selects either one of {@link #getFormat12Hour()} or {@link #getFormat24Hour()} depending on whether the user has selected 24-hour format.
+     * <p/>
+     * Calling this method does not schedule or unschedule the time ticker.
+     */
+    private void chooseFormat() {
+        chooseFormat(true);
+    }
 
-	/**
-	 * Returns the current format string. Always valid after constructor has finished, and will never be {@code null}.
-	 *
-	 * @hide
-	 */
-	public CharSequence getFormat() {
-		return mFormat;
-	}
+    /**
+     * Returns the current format string. Always valid after constructor has finished, and will never be {@code null}.
+     *
+     * @hide
+     */
+    public CharSequence getFormat() {
+        return mFormat;
+    }
 
-	private CharSequence LocaleData_timeFormat_kkm = "kk:mm";
-	private CharSequence LocaleData_timeFormat_km = "k:mm";
+    /**
+     * Selects either one of {@link #getFormat12Hour()} or {@link #getFormat24Hour()} depending on whether the user has selected 24-hour format.
+     *
+     * @param handleTicker true if calling this method should schedule/unschedule the time ticker, false otherwise
+     */
+    private void chooseFormat(boolean handleTicker) {
+        final boolean format24Requested = is24HourModeEnabled();
 
-	/**
-	 * Selects either one of {@link #getFormat12Hour()} or {@link #getFormat24Hour()} depending on whether the user has selected 24-hour format.
-	 *
-	 * @param handleTicker
-	 *            true if calling this method should schedule/unschedule the time ticker, false otherwise
-	 */
-	private void chooseFormat(boolean handleTicker) {
-		final boolean format24Requested = is24HourModeEnabled();
+        // LocaleData ld = LocaleData.get(getContext().getResources().getConfiguration().locale);
 
-		// LocaleData ld = LocaleData.get(getContext().getResources().getConfiguration().locale);
+        if (format24Requested) {
+            mFormat = abc(mFormat24, mFormat12, LocaleData_timeFormat_kkm);
+        } else {
+            mFormat = abc(mFormat12, mFormat24, LocaleData_timeFormat_hm);
+        }
 
-		if (format24Requested) {
-			mFormat = abc(mFormat24, mFormat12, LocaleData_timeFormat_kkm);
-		} else {
-			mFormat = abc(mFormat12, mFormat24, LocaleData_timeFormat_km);
-		}
+        boolean hadSeconds = mHasSeconds;
+        mHasSeconds = DateFormatCompat.hasSeconds(mFormat);
 
-		boolean hadSeconds = mHasSeconds;
-		mHasSeconds = DateFormatCompat.hasSeconds(mFormat);
+        if (handleTicker && mAttached && hadSeconds != mHasSeconds) {
+            if (hadSeconds)
+                getHandler().removeCallbacks(mTicker);
+            else
+                mTicker.run();
+        }
+    }
 
-		if (handleTicker && mAttached && hadSeconds != mHasSeconds) {
-			if (hadSeconds)
-				getHandler().removeCallbacks(mTicker);
-			else
-				mTicker.run();
-		}
-	}
+    /**
+     * Returns a if not null, else return b if not null, else return c.
+     */
+    private static CharSequence abc(CharSequence a, CharSequence b, CharSequence c) {
+        return a == null ? (b == null ? c : b) : a;
+    }
 
-	/**
-	 * Returns a if not null, else return b if not null, else return c.
-	 */
-	private static CharSequence abc(CharSequence a, CharSequence b, CharSequence c) {
-		return a == null ? (b == null ? c : b) : a;
-	}
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
 
-	@Override
-	protected void onAttachedToWindow() {
-		super.onAttachedToWindow();
+        if (!mAttached) {
+            mAttached = true;
 
-		if (!mAttached) {
-			mAttached = true;
+            registerReceiver();
+            registerObserver();
 
-			registerReceiver();
-			registerObserver();
+            createTime(mTimeZone);
 
-			createTime(mTimeZone);
+            if (mHasSeconds) {
+                mTicker.run();
+            } else {
+                onTimeChanged();
+            }
+        }
+    }
 
-			if (mHasSeconds) {
-				mTicker.run();
-			} else {
-				onTimeChanged();
-			}
-		}
-	}
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
 
-	@Override
-	protected void onDetachedFromWindow() {
-		super.onDetachedFromWindow();
+        if (mAttached) {
+            unregisterReceiver();
+            unregisterObserver();
 
-		if (mAttached) {
-			unregisterReceiver();
-			unregisterObserver();
+            getHandler().removeCallbacks(mTicker);
 
-			getHandler().removeCallbacks(mTicker);
+            mAttached = false;
+        }
+    }
 
-			mAttached = false;
-		}
-	}
+    private void registerReceiver() {
+        final IntentFilter filter = new IntentFilter();
 
-	private void registerReceiver() {
-		final IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
 
-		filter.addAction(Intent.ACTION_TIME_TICK);
-		filter.addAction(Intent.ACTION_TIME_CHANGED);
-		filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
+    }
 
-		getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
-	}
+    private void registerObserver() {
+        final ContentResolver resolver = getContext().getContentResolver();
+        resolver.registerContentObserver(Settings.System.CONTENT_URI, true, mFormatChangeObserver);
+    }
 
-	private void registerObserver() {
-		final ContentResolver resolver = getContext().getContentResolver();
-		resolver.registerContentObserver(Settings.System.CONTENT_URI, true, mFormatChangeObserver);
-	}
+    private void unregisterReceiver() {
+        getContext().unregisterReceiver(mIntentReceiver);
+    }
 
-	private void unregisterReceiver() {
-		getContext().unregisterReceiver(mIntentReceiver);
-	}
+    private void unregisterObserver() {
+        final ContentResolver resolver = getContext().getContentResolver();
+        resolver.unregisterContentObserver(mFormatChangeObserver);
+    }
 
-	private void unregisterObserver() {
-		final ContentResolver resolver = getContext().getContentResolver();
-		resolver.unregisterContentObserver(mFormatChangeObserver);
-	}
-
-	private void onTimeChanged() {
-		mTime.setTimeInMillis(System.currentTimeMillis());
-		setText(DateFormat.format(mFormat, mTime));
-	}
+    private void onTimeChanged() {
+        mTime.setTimeInMillis(System.currentTimeMillis());
+        setText(DateFormat.format(mFormat, mTime));
+    }
 }
