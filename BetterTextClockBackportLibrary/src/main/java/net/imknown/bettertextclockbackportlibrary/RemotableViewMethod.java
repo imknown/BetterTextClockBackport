@@ -22,7 +22,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @hide
  * This annotation indicates that a method on a subclass of View
  * is alllowed to be used with the {@link android.widget.RemoteViews} mechanism.
  */

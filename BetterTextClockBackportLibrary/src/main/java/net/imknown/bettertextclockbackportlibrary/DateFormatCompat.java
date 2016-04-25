@@ -4,14 +4,12 @@ public class DateFormatCompat {
 
     /**
      * @deprecated Use a literal {@code '} instead.
-     * @removed
      */
     @Deprecated
     public  static final char    QUOTE                  =    '\'';
 
     /**
      * @deprecated Use a literal {@code 's'} instead.
-     * @removed
      */
     @Deprecated
     public  static final char    SECONDS                =    's';
@@ -21,21 +19,17 @@ public class DateFormatCompat {
 	 *
 	 * Always returns false if the input format is null.
 	 *
-	 * @param inFormat
-	 *            the format string, as described in {@link android.text.format.DateFormat}
+	 * @param inFormat the format string, as described in {@link android.text.format.DateFormat}
 	 *
 	 * @return true if the format string contains {@link #SECONDS}, false otherwise
-	 *
-	 * @hide
 	 */
 	public static boolean hasSeconds(CharSequence inFormat) {
 		return hasDesignator(inFormat, SECONDS);
 	}
 
 	/**
-	 * Test if a format string contains the given designator. Always returns {@code false} if the input format is {@code null}.
-	 *
-	 * @hide
+	 * Test if a format string contains the given designator. Always returns
+	 * {@code false} if the input format is {@code null}.
 	 */
 	public static boolean hasDesignator(CharSequence inFormat, char designator) {
 		if (inFormat == null)
