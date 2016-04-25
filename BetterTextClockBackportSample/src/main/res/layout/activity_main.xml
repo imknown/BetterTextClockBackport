@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="\nI changed k instead of H/HH as default" />
+            android:text="\nForce use 12 format" />
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
@@ -55,6 +55,11 @@
             app:forceUse="format12"
             app:format12Hour="a hh:mm:ss" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\nForce use 24 format" />
+
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,19 +72,24 @@
             app:forceUse="format24"
             app:format24Hour="kk:mm:ss" />
 
-        <net.imknown.bettertextclockbackportlibrary.TextClock
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:forceUse="formatAuto"
-            app:format12Hour="a k:m:s"
-            app:format24Hour="a kk:m:s" />
+            android:text="\nUse system format" />
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="formatAuto"
-            app:format12Hour="a k:mm:ss"
-            app:format24Hour="a kk:mm:ss" />
+            app:format12Hour="a h:m:s"
+            app:format24Hour="k:m:s" />
+
+        <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:forceUse="formatAuto"
+            app:format12Hour="a hh:mm:ss"
+            app:format24Hour="kk:mm:ss" />
 
         <!-- ===================================================== -->
 
