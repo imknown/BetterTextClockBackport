@@ -1,9 +1,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,123 +13,148 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date" />
+            android:text="Date"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:format12Hour="yyyy/MM/dd EEEE"
-            app:format24Hour="yyyy/MM/dd EEEE" />
+            app:format24Hour="yyyy/MM/dd EEEE"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:format12Hour="y/M/d E"
-            app:format24Hour="y/M/d E" />
+            app:format24Hour="y/M/d E"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="\nNormal" />
+            android:text="\nNormal"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/focus_use_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="focus 12"/>
+
+            <Button
+                android:id="@+id/focus_use_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="focus 24"/>
+
+            <Button
+                android:id="@+id/use_system"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="system"/>
+
+        </LinearLayout>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
+            android:id="@+id/normal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <!-- ===================================================== -->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="\nForce use 12 format" />
+            android:text="\nForce use 12 format"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format12"
-            app:format12Hour="a h:m:s" />
+            app:format12Hour="a h:m:s"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format12"
-            app:format12Hour="a hh:mm:ss" />
+            app:format12Hour="a hh:mm:ss"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="\nForce use 24 format" />
+            android:text="\nForce use 24 format"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="k:m:s" />
+            app:format24Hour="k:m:s"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="kk:mm:ss" />
+            app:format24Hour="kk:mm:ss"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="\nUse system format" />
+            android:text="\nUse system format"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="formatAuto"
             app:format12Hour="a h:m:s"
-            app:format24Hour="k:m:s" />
+            app:format24Hour="k:m:s"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="formatAuto"
             app:format12Hour="a hh:mm:ss"
-            app:format24Hour="kk:mm:ss" />
+            app:format24Hour="kk:mm:ss"/>
 
         <!-- ===================================================== -->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="\nH and HH for 24 can be used above API 17 only" />
+            android:text="\nH and HH for 24 can be used above API 17 only"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="H:m:s" />
+            app:format24Hour="H:m:s"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format24"
-            app:format24Hour="HH:mm:ss" />
+            app:format24Hour="HH:mm:ss"/>
 
         <!-- ===================================================== -->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="\nGMT, Washington D.C. and Tokyo" />
+            android:text="\nGMT, Washington D.C. and Tokyo"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format12"
             app:format12Hour="y/M/d E a h:m:s"
-            app:timeZone="GMT-6" />
+            app:timeZone="GMT-6"/>
 
         <net.imknown.bettertextclockbackportlibrary.TextClock
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:forceUse="format12"
             app:format12Hour="y/M/d E a h:m:s"
-            app:timeZone="GMT+9" />
+            app:timeZone="GMT+9"/>
     </LinearLayout>
 
 </ScrollView>

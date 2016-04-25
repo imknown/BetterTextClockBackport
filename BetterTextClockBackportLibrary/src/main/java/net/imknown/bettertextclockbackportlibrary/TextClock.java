@@ -117,9 +117,9 @@ public class TextClock extends TextView {
     private String mTimeZone;
 
     // region [add by imknown]
-    private static final int FORMAT_12 = 0;
-    private static final int FORMAT_24 = 1;
-    private static final int FORMAT_AUTO = 2;
+    public static final int FORMAT_12 = 0;
+    public static final int FORMAT_24 = 1;
+    public static final int FORMAT_AUTO = 2;
     private int forceUse = FORMAT_AUTO;
 
     private static final CharSequence LocaleData_timeFormat_hm = "h:mm";
@@ -340,6 +340,16 @@ public class TextClock extends TextView {
      */
     public void setContentDescriptionFormat24Hour(CharSequence format) {
         mDescFormat24 = format;
+        chooseFormat();
+        onTimeChanged();
+    }
+
+    public int getForceUse(){
+        return forceUse;
+    }
+
+    public void setForceUse(int forceUse){
+        this.forceUse = forceUse;
         chooseFormat();
         onTimeChanged();
     }

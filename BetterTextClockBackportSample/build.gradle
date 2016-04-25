@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+def code = 2
+version = "1.0.1"
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -8,8 +11,8 @@ android {
         applicationId "net.imknown.bettertextclockbackport"
         minSdkVersion 4
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode code
+        versionName version
     }
     buildTypes {
         release {
