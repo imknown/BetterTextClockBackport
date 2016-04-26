@@ -6,7 +6,7 @@ Backport Android 4.2 TextClock to Android 1.6+ with some codes of 12/24 format c
 
 # Install to project from jCenter
 ### Gradle dependency
-`compile 'net.imknown:BetterTextClockBackportLibrary:1.0.1''`
+`compile 'net.imknown:BetterTextClockBackportLibrary:1.0.1'`
 
 ### Maven dependency
  ``` xml
