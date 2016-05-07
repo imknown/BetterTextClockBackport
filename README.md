@@ -18,7 +18,9 @@ See sample for more info.
 
 # Install to project from jCenter
 ### Gradle dependency
+``` groovy
 `compile 'net.imknown:BetterTextClockBackportLibrary:1.0.1'`
+ ```
 
 ### Maven dependency
  ``` xml
