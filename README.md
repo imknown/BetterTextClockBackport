@@ -2,6 +2,8 @@
 Backport Android 4.2 TextClock to Android 1.6+ with some codes of 12/24 format control.
 
 ### Screen record
+- This is the gif of version 1.0.0, *NOT* the latest!  
+  
 ![github](https://raw.githubusercontent.com/imknown/BetterTextClockBackport/master/Art/screen_record.gif "github")
 
 ### Sample code
