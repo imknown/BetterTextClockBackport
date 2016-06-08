@@ -16,7 +16,9 @@ Backport Android 4.2 TextClock to Android 1.6+ with some codes of 12/24 format c
     app:format24Hour="k:m:s"/>
 ```
 
-See sample for more info.
+For more info, plz see the sample: [xml layout][1] & [java code][2] .  
+[1]: https://github.com/imknown/BetterTextClockBackport/blob/master/BetterTextClockBackportSample/src/main/res/layout/activity_main.xml
+[2]: https://github.com/imknown/BetterTextClockBackport/blob/master/BetterTextClockBackportSample/src/main/java/net/imknown/bettertextclockbackport/MainActivity.java#L28-L36
 
 # Install to project from jCenter
 ### Gradle dependency
